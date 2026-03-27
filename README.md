@@ -95,5 +95,4 @@ Ajouter une persistance locale des messages dans un fichier JSON (`server/messag
 
 ## Liens a renseigner
 
-- Depot GitHub/GitLab: `<A_COMPLETER>`
-- URL Render: `<A_COMPLETER>`
+- URL Render: `https://tp2-messageboard.onrender.com`
