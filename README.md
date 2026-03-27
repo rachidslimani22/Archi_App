@@ -41,6 +41,7 @@ Serveur Express (`server/index.js`) avec etat en memoire:
 
 - `counter`
 - `allMsgs`
+- persistance simple des messages dans `server/messages.json`
 
 Routes:
 
@@ -83,7 +84,7 @@ Le service Render expose a la fois le front et l'API.
 
 ## Limites
 
-- donnees non persistantes (memoire serveur)
+- persistance locale simple (fichier JSON), pas de base de donnees
 - routes de mutation en `GET` (choix de l'enonce)
 
 ## Liens a renseigner
