@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini fil de discussion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-light">
+  <header class="page-header">
+    <h1>Mini fil de discussion</h1>
+    <p>Partagez vos messages avec la classe.</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="messages-title">
+      <h2 id="messages-title">Messages</h2>
+      <div class="toolbar">
+        <button id="refresh-btn" type="button">Mise a jour</button>
+        <label for="api-base-input">URL API</label>
+        <input
+          id="api-base-input"
+          class="api-base-input"
+          name="apiBase"
+          type="text"
+          placeholder="Ex: https://mon-service.onrender.com"
+        >
+        <label for="theme-select">Style</label>
+        <select id="theme-select" name="theme">
+          <option value="light" selected>Theme clair</option>
+          <option value="dark">Theme sombre</option>
+        </select>
+      </div>
+      <ul id="message-list" class="message-list"></ul>
+    </section>
+
+    <section aria-labelledby="new-message-title">
+      <h2 id="new-message-title">Nouveau message</h2>
+      <form id="message-form" action="#" method="post">
+        <label for="pseudo-input">Pseudo</label>
+        <input
+          id="pseudo-input"
+          name="pseudo"
+          type="text"
+          placeholder="Votre pseudo"
+          required
+        >
+        <label for="message-input">Votre message</label>
+        <textarea
+          id="message-input"
+          name="message"
+          rows="5"
+          placeholder="Ecrivez votre message ici..."
+        ></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

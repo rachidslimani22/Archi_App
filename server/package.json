@@ -1,0 +1,13 @@
+{
+  "name": "tp2-messageboard-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serveur NodeJS pour TP2 Message Board",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
