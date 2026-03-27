@@ -41,7 +41,6 @@ Serveur Express (`server/index.js`) avec etat en memoire:
 
 - `counter`
 - `allMsgs`
-- persistance simple des messages dans `server/messages.json`
 
 Routes:
 
@@ -84,8 +83,15 @@ Le service Render expose a la fois le front et l'API.
 
 ## Limites
 
-- persistance locale simple (fichier JSON), pas de base de donnees
+- donnees non persistantes (memoire serveur)
 - routes de mutation en `GET` (choix de l'enonce)
+
+## Amelioration simple proposee
+
+Ajouter une persistance locale des messages dans un fichier JSON (`server/messages.json`) :
+
+- chargement des messages au demarrage du serveur,
+- sauvegarde apres chaque `post` et `del`.
 
 ## Liens a renseigner
 

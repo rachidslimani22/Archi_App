@@ -1,13 +1,11 @@
 "use strict";
 
-const fs = require("fs");
 const path = require("path");
 const express = require("express");
 
 const app = express();
 const port = process.env.PORT || 8080;
 const clientDir = path.join(__dirname, "..", "client");
-const messagesFile = path.join(__dirname, "messages.json");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,12 +18,11 @@ app.use((req, res, next) => {
 });
 
 let counter = 0;
-const defaultMsgs = [
+let allMsgs = [
   { msg: "Hello World", pseudo: "Ada", date: "2026-03-26 09:00" },
   { msg: "foobar", pseudo: "Linus", date: "2026-03-26 09:03" },
   { msg: "CentraleSupelec Forever", pseudo: "Mia", date: "2026-03-26 09:10" }
 ];
-let allMsgs = [...defaultMsgs];
 
 function isIntegerString(value) {
   return /^-?\d+$/.test(value);
@@ -48,31 +45,6 @@ function nowAsLocalString() {
     minute: "2-digit"
   });
 }
-
-function loadMessagesFromDisk() {
-  try {
-    if (!fs.existsSync(messagesFile)) {
-      return;
-    }
-    const raw = fs.readFileSync(messagesFile, "utf8");
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      allMsgs = parsed;
-    }
-  } catch (error) {
-    console.error("Impossible de charger messages.json:", error.message);
-  }
-}
-
-function saveMessagesToDisk() {
-  try {
-    fs.writeFileSync(messagesFile, JSON.stringify(allMsgs, null, 2), "utf8");
-  } catch (error) {
-    console.error("Impossible d'ecrire messages.json:", error.message);
-  }
-}
-
-loadMessagesFromDisk();
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
@@ -131,20 +103,14 @@ app.get("/msg/nber", (req, res) => {
 app.get("/msg/post/*", (req, res) => {
   const rawMessage = req.params[0] || "";
   const decodedMessage = decodePathComponent(rawMessage);
-  const cleanMessage = decodedMessage.toString().trim();
-  if (!cleanMessage) {
-    return res.json({ code: -1 });
-  }
-
   const pseudo = (req.query.pseudo || "Anonyme").toString().trim() || "Anonyme";
   const date = (req.query.date || nowAsLocalString()).toString();
 
   allMsgs.push({
-    msg: cleanMessage,
+    msg: decodedMessage,
     pseudo,
     date
   });
-  saveMessagesToDisk();
   res.json(allMsgs.length - 1);
 });
 
@@ -160,7 +126,6 @@ app.get("/msg/del/*", (req, res) => {
   }
 
   allMsgs.splice(index, 1);
-  saveMessagesToDisk();
   return res.json({ code: 1 });
 });
 
