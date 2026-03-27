@@ -58,23 +58,6 @@ const messageForm = document.getElementById("message-form");
 const pseudoInput = document.getElementById("pseudo-input");
 const messageInput = document.getElementById("message-input");
 const themeSelect = document.getElementById("theme-select");
-const apiBaseInput = document.getElementById("api-base-input");
-
-function normalizeBaseUrl(url) {
-  return url.trim().replace(/\/+$/, "");
-}
-
-function getApiBaseUrl() {
-  return normalizeBaseUrl(apiBaseInput.value);
-}
-
-function buildApiUrl(path) {
-  const base = getApiBaseUrl();
-  if (!base) {
-    return path;
-  }
-  return base + path;
-}
 
 function applyTheme(themeValue) {
   document.body.classList.remove("theme-light", "theme-dark");
@@ -86,7 +69,7 @@ function applyTheme(themeValue) {
 }
 
 async function fetchJson(path) {
-  const response = await fetch(buildApiUrl(path));
+  const response = await fetch(path);
   if (!response.ok) {
     throw new Error("HTTP " + response.status);
   }
@@ -94,11 +77,6 @@ async function fetchJson(path) {
 }
 
 async function refreshFromApi() {
-  if (window.location.protocol === "file:" && !getApiBaseUrl()) {
-    update(msgs);
-    return;
-  }
-
   const data = await fetchJson("/msg/getAll");
   if (!Array.isArray(data)) {
     throw new Error("Format inattendu pour /msg/getAll");
@@ -127,22 +105,13 @@ messageForm.addEventListener("submit", async (event) => {
   }
 
   try {
-    if (window.location.protocol === "file:" && !getApiBaseUrl()) {
-      msgs.push({
-        msg: message,
-        pseudo,
-        date: new Date().toLocaleString("fr-FR")
-      });
-      update(msgs);
-    } else {
-      const path =
-        "/msg/post/" +
-        encodeURIComponent(message) +
-        "?pseudo=" +
-        encodeURIComponent(pseudo);
-      await fetchJson(path);
-      await refreshFromApi();
-    }
+    const path =
+      "/msg/post/" +
+      encodeURIComponent(message) +
+      "?pseudo=" +
+      encodeURIComponent(pseudo);
+    await fetchJson(path);
+    await refreshFromApi();
     messageInput.value = "";
     messageInput.focus();
   } catch (error) {
@@ -154,17 +123,8 @@ themeSelect.addEventListener("change", () => {
   applyTheme(themeSelect.value);
 });
 
-apiBaseInput.addEventListener("change", () => {
-  localStorage.setItem("messageBoardApiBase", normalizeBaseUrl(apiBaseInput.value));
-});
-
-const savedApiBase = localStorage.getItem("messageBoardApiBase");
-if (savedApiBase) {
-  apiBaseInput.value = savedApiBase;
-}
-
 applyTheme(themeSelect.value);
 refreshFromApi().catch((error) => {
-  console.error("Chargement initial API impossible, fallback local:", error);
+  console.error("Chargement initial API impossible:", error);
   update(msgs);
 });
